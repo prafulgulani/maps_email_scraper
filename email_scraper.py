@@ -6,15 +6,16 @@ import re
 import time
 
 
-EMAILS_FILE = "mumbai_emails_new.csv"
+INPUT_FILE = "mumbai.csv"
+OUTPUT_FILE = "mumbai_emails_new.csv"
 
-if not os.path.exists(EMAILS_FILE):
-    with open(EMAILS_FILE, "w", newline="", encoding="utf-8") as f:
+if not os.path.exists(OUTPUT_FILE):
+    with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerow(["index", "name",
                         "rating", "ratings_count", 
                         "website", "phone","emails", 
-                        "instagram","facebook","linkedin","twitter","youtube","wa"])
+                        "instagram","facebook","linkedin","twitter","youtube","whatsapp",])
 
 SOCIAL_PATTERNS = {
     "instagram": r"https?://(?:www\.)?instagram\.com/[^\s\"'>]+",
@@ -22,7 +23,7 @@ SOCIAL_PATTERNS = {
     "linkedin":  r"https?://(?:www\.)?linkedin\.com/[^\s\"'>]+",
     "twitter":   r"https?://(?:www\.)?(?:twitter|x)\.com/[^\s\"'>]+",
     "youtube":   r"https?://(?:www\.)?youtube\.com/[^\s\"'>]+",
-    "wa":        r"https?://(?:wa\.me|api\.whatsapp\.com)/[^\s\"'>]+",
+    "whatsapp":        r"https?://(?:wa\.me|api\.whatsapp\.com)/[^\s\"'>]+",
 }
 
 EMAIL_REGEX = re.compile(
@@ -33,8 +34,8 @@ IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".ico")
 
 processed = set()
 
-if os.path.exists(EMAILS_FILE):
-    with open(EMAILS_FILE, newline="", encoding="utf-8") as f:
+if os.path.exists(OUTPUT_FILE):
+    with open(OUTPUT_FILE, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             processed.add(int(row["index"]))
@@ -135,13 +136,13 @@ def parse_rating(rating_str):
 
 
 
-df = pd.read_csv("bangalore.csv")
+df = pd.read_csv(INPUT_FILE)
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
     page = browser.new_page()
 
-    with open(EMAILS_FILE, "a", newline="", encoding="utf-8") as f:
+    with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
 
         for row in df.itertuples(index=True):
@@ -167,7 +168,7 @@ with sync_playwright() as p:
                 socials["linkedin"],
                 socials["twitter"],
                 socials["youtube"],
-                socials["wa"],])
+                socials["whatsapp"],])
             f.flush()
 
             print("   ➜", emails)
