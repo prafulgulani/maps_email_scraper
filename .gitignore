@@ -1,0 +1,19 @@
+# virtual env
+venv/
+
+# scraped outputs
+*.csv
+
+# raw data folders
+gmapsdata/
+outputs/
+data/
+
+# cache
+__pycache__/
+*.pyc
+
+# system
+.DS_Store
+
+tests/
